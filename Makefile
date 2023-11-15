@@ -11,3 +11,6 @@ down:
 
 get_max_connections:
 	@PGPASSWORD=${POSTGRES_PASSWORD} docker exec -it ${CONTAINER_NAME} psql -U root -d ${POSTGRES_DB} -h 127.0.0.1 -c "SHOW max_connections;"
+
+get_current_connections:
+	@PGPASSWORD=${POSTGRES_PASSWORD} docker exec -it ${CONTAINER_NAME} psql -U root -d ${POSTGRES_DB} -c "SELECT pid,state FROM pg_stat_activity;"
