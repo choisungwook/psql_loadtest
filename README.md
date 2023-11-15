@@ -31,7 +31,7 @@ pip install -r requirements.txt
 # select 1쿼리를 동시 실행
 python simple.py -n {동시 접속 개수}
 
-# bash sleep 10초를 동시 실행
+# sleep함수 10초를 동시 실행
 python sleep.py -n {동시 접속 개수}
 ```
 
@@ -39,7 +39,7 @@ python sleep.py -n {동시 접속 개수}
 
 # 테스트 결과
 
-* max_connection 100개 일 떄, 동시 접속 100번하면 에러 발생
+* max_connection 100개 일 때, 동시 접속 100번하면 에러 발생
 
 ![](imgs/connection_99.png)
 
