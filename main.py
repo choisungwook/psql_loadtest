@@ -1,0 +1,37 @@
+import argparse
+import psycopg2
+from concurrent.futures import ThreadPoolExecutor
+
+def connect_to_db():
+  conn = psycopg2.connect(
+    host="127.0.0.1",
+    database="test",
+    user="root",
+    password="password"
+  )
+  return conn
+
+def test_connection(_):
+  conn = connect_to_db()
+  cur = conn.cursor()
+  cur.execute("SELECT 1")
+  result = cur.fetchone()
+  cur.close()
+  conn.close()
+  return result
+
+def run_load_test(num_connections):
+  with ThreadPoolExecutor(max_workers=num_connections) as executor:
+    results = list(executor.map(test_connection, range(num_connections)))
+  return results
+
+def main():
+  parser = argparse.ArgumentParser(description='Run load test on PostgreSQL database')
+  parser.add_argument('-n', '--num_connections', type=int, help='Number of connections to use in the load test')
+  args = parser.parse_args()
+
+  results = run_load_test(args.num_connections)
+  print(f"Results: {results}")
+
+if __name__ == "__main__":
+  main()
