@@ -16,7 +16,7 @@ make down
 <br>
 
 # 로드 테스트
-* 파이썬 가상환경 활성화
+* 파이썬 가상환경 활성화(파이썬 3.9 이상)
 
 ```bash
 python -m venv venv
