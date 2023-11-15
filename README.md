@@ -1,20 +1,21 @@
 # 개요
 * postgresl 커넥션 테스트
 
-# postgres 생성
+<br>
+
+# postgres 도커 컨테이너 생성
 
 ```bash
+# 생성
 make up
-```
 
-# postgres 삭제
-
-```bash
+# 삭제
 make down
 ```
 
-# loadtest
+<br>
 
+# 로드 테스트
 * 파이썬 가상환경 활성화
 
 ```bash
@@ -33,6 +34,8 @@ python simple.py -n {동시 접속 개수}
 # bash sleep 10초를 동시 실행
 python sleep.py -n {동시 접속 개수}
 ```
+
+<br>
 
 # 테스트 결과
 
