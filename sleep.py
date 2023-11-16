@@ -1,33 +1,33 @@
 import argparse
-import psycopg2
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from concurrent.futures import ThreadPoolExecutor
+from sqlalchemy import text
 
 def connect_to_db():
-  conn = psycopg2.connect(
-    host="127.0.0.1",
-    database="test",
-    user="root",
-    password="password"
-  )
-  return conn
+  engine = create_engine('postgresql://{id}:{pw}@{ip}:{port}/{database_name}')
+  Session = sessionmaker(bind=engine)
+  return Session()
 
-def idle_session(_):
-  conn = connect_to_db()
-  cur = conn.cursor()
-  cur.execute("SELECT pg_sleep(10)")
-  cur.close()
-  conn.close()
 
-def run_idle_sessions(num_sessions):
-  with ThreadPoolExecutor(max_workers=num_sessions) as executor:
-    executor.map(idle_session, range(num_sessions))
+def test_connection(_):
+  session = connect_to_db()
+  result = session.execute(text('SELECT pg_sleep(10)')).fetchone()
+  session.close()
+  return result
+
+def run_load_test(num_connections):
+  with ThreadPoolExecutor(max_workers=num_connections) as executor:
+    results = list(executor.map(test_connection, range(num_connections)))
+  return results
 
 def main():
   parser = argparse.ArgumentParser(description='Run load test on PostgreSQL database')
-  parser.add_argument('-n', '--num_sessions', type=int, help='Number of sessions to idle')
+  parser.add_argument('-n', '--num_connections', type=int, help='Number of connections to use in the load test')
   args = parser.parse_args()
 
-  run_idle_sessions(args.num_sessions)
+  results = run_load_test(args.num_connections)
+  print(f"Results: {results}")
 
 if __name__ == "__main__":
   main()

@@ -1,23 +1,19 @@
 import argparse
-import psycopg2
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from concurrent.futures import ThreadPoolExecutor
+from sqlalchemy import text
 
 def connect_to_db():
-  conn = psycopg2.connect(
-    host="127.0.0.1",
-    database="test",
-    user="root",
-    password="password"
-  )
-  return conn
+  engine = create_engine('postgresql://{id}:{pw}@{ip}:{port}/{database_name}')
+  Session = sessionmaker(bind=engine)
+  return Session()
+
 
 def test_connection(_):
-  conn = connect_to_db()
-  cur = conn.cursor()
-  cur.execute("SELECT 1")
-  result = cur.fetchone()
-  cur.close()
-  conn.close()
+  session = connect_to_db()
+  result = session.execute(text('SELECT 1')).fetchone()
+  session.close()
   return result
 
 def run_load_test(num_connections):
